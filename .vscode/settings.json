@@ -1,0 +1,10 @@
+{
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": "explicit",
+		"source.removeUnusedImports": "explicit"
+	},
+	"typescript.preferences.organizeImports": true,
+	"typescript.suggest.autoImports": true,
+	"editor.formatOnSave": true,
+	"typescript.updateImportsOnFileMove.enabled": "always"
+}
