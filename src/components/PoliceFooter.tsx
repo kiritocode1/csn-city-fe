@@ -73,7 +73,7 @@ const navigation = {
 const Underline = `hover:-translate-y-1 border border-dotted rounded-xl p-2.5 transition-transform`;
 
 const PoliceFooter = () => {
-	const [visitCount, setVisitCount] = useState(0);
+	const [visitCount, setVisitCount] = useState(129901);
 	const { t } = useLanguage();
 	const [lastUpdated, setLastUpdated] = useState("");
 
