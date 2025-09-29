@@ -97,29 +97,40 @@ const StationsPage = () => {
 		const fetchStations = async () => {
 			try {
 				setLoading(true);
-				const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+				const backendUrl = "https://csn.dreamcaredevelopers.com";
 
-				// If no backend URL, use fallback data immediately
-				if (!backendUrl) {
-					setStations(FALLBACK_STATIONS);
-					setError(null);
-					return;
-				}
-
-				const response = await fetch(`${backendUrl}/api/stations-with-officers`);
+				const response = await fetch(`${backendUrl}/api/get-stations`);
 
 				if (!response.ok) {
 					throw new Error("Failed to fetch police stations data");
 				}
 
 				const data = await response.json();
-				const stationsList: PoliceStation[] = data?.data || [];
 
-				if (!Array.isArray(stationsList) || stationsList.length === 0) {
-					setStations(FALLBACK_STATIONS);
-					setError(null);
+				// Transform API data to match expected format
+				if (Array.isArray(data.stations)) {
+					const transformedStations: PoliceStation[] = data.stations.map((station: any) => ({
+						station_name: station.name,
+						station_name_in_marathi: station.name_in_marathi,
+						address: station.address || "Address not available",
+						address_in_marathi: station.address_in_marathi || "पत्ता उपलब्ध नाही",
+						contact_no: station.contact_no || "Contact not available",
+						map_link: "",
+						latitude: 19.8762, // Default coordinates
+						longitude: 75.3433,
+						officer_name: "Officer details not available",
+						officer_name_in_marathi: "अधिकारी माहिती उपलब्ध नाही",
+					}));
+
+					if (transformedStations.length === 0) {
+						setStations(FALLBACK_STATIONS);
+						setError(null);
+					} else {
+						setStations(transformedStations);
+						setError(null);
+					}
 				} else {
-					setStations(stationsList);
+					setStations(FALLBACK_STATIONS);
 					setError(null);
 				}
 			} catch (err) {
@@ -148,18 +159,7 @@ const StationsPage = () => {
 		);
 	});
 
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case "Open":
-				return "default";
-			case "24/7":
-				return "secondary";
-			case "Closed":
-				return "destructive";
-			default:
-				return "outline";
-		}
-	};
+
 
 	const titleLabel = language === "mr" ? "पोलीस स्टेशन" : "Police Stations";
 	const subtitleLabel =

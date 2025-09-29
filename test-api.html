@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>Police Station API Test</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 20px;
+			}
+			.test {
+				margin: 20px 0;
+				padding: 15px;
+				border: 1px solid #ccc;
+				border-radius: 5px;
+			}
+			.success {
+				background-color: #d4edda;
+				border-color: #c3e6cb;
+			}
+			.error {
+				background-color: #f8d7da;
+				border-color: #f5c6cb;
+			}
+			.loading {
+				background-color: #fff3cd;
+				border-color: #ffeaa7;
+			}
+			pre {
+				background-color: #f8f9fa;
+				padding: 10px;
+				border-radius: 3px;
+				overflow-x: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Police Station API Test</h1>
+		<div id="results"></div>
+
+		<script>
+			const BACKEND_URL = "https://csn.dreamcaredevelopers.com";
+			const resultsDiv = document.getElementById("results");
+
+			function addTestResult(title, success, message, data = null) {
+				const div = document.createElement("div");
+				div.className = `test ${success ? "success" : "error"}`;
+				div.innerHTML = `
+                <h3>${title}</h3>
+                <p>${message}</p>
+                ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ""}
+            `;
+				resultsDiv.appendChild(div);
+			}
+
+			async function testAPI() {
+				// Test 1: Basic connectivity
+				try {
+					addTestResult("Basic Connectivity", true, "Testing basic connection...");
+					const response = await fetch(`${BACKEND_URL}/api/get-stations`);
+					if (response.ok) {
+						const data = await response.json();
+						addTestResult("Basic Connectivity", true, "✅ Backend is accessible", data);
+					} else {
+						addTestResult("Basic Connectivity", false, `❌ Backend returned ${response.status}`);
+					}
+				} catch (error) {
+					addTestResult("Basic Connectivity", false, `❌ Error: ${error.message}`);
+				}
+
+				// Test 2: Dropdown endpoint
+				try {
+					addTestResult("Dropdown Endpoint", true, "Testing dropdown endpoint...");
+					const response = await fetch(`${BACKEND_URL}/api/stations-dropdown`);
+					if (response.ok) {
+						const data = await response.json();
+						if (data.success && Array.isArray(data.stations)) {
+							addTestResult("Dropdown Endpoint", true, `✅ Found ${data.stations.length} stations`, data);
+
+							// Test 3: Individual station details
+							if (data.stations.length > 0) {
+								const firstStation = data.stations[0];
+								try {
+									addTestResult("Station Details", true, `Testing station details for: ${firstStation.name}...`);
+									const stationResponse = await fetch(`${BACKEND_URL}/api/station-detail?id=${firstStation._id}`);
+									if (stationResponse.ok) {
+										const stationData = await stationResponse.json();
+										addTestResult("Station Details", true, "✅ Station details retrieved", stationData);
+									} else {
+										addTestResult("Station Details", false, `❌ Station details failed: ${stationResponse.status}`);
+									}
+								} catch (error) {
+									addTestResult("Station Details", false, `❌ Error: ${error.message}`);
+								}
+							}
+						} else {
+							addTestResult("Dropdown Endpoint", false, "❌ Invalid response format", data);
+						}
+					} else {
+						addTestResult("Dropdown Endpoint", false, `❌ Dropdown endpoint failed: ${response.status}`);
+					}
+				} catch (error) {
+					addTestResult("Dropdown Endpoint", false, `❌ Error: ${error.message}`);
+				}
+			}
+
+			// Run tests when page loads
+			testAPI();
+		</script>
+	</body>
+</html>

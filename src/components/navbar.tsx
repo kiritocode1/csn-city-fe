@@ -9,6 +9,7 @@ import React from "react";
 import ExtendedLink from "./ExtendedLink";
 import LanguageSwitch from "./language-switch";
 import NationalEmblem from "./National-Emblem";
+import PoliceStationDropdown from "./PoliceStationDropdown";
 import { Button } from "./ui/button";
 import { DropdownMenu } from "./ui/dropdown-menu";
 
@@ -257,12 +258,13 @@ const Navbar = () => {
 								</button>
 							</div>
 
-							<div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden size-fit lg:block ml-20">
+							{/* Main Navigation - Center */}
+							<div className="hidden lg:flex items-center justify-end flex-1">
 								<nav
 									role="navigation"
 									aria-label="Main navigation"
 								>
-									<ul className="flex gap-6 text-xs">
+									<ul className="flex gap-6 text-sm items-center ml-8">
 										<li>
 											<Button
 												asChild
@@ -288,6 +290,32 @@ const Navbar = () => {
 												</DropdownMenu>
 											</li>
 										))}
+										{/* Police Services integrated with navigation */}
+										<li>
+											<PoliceStationDropdown />
+										</li>
+										<li>
+											<Button
+												asChild
+												variant="outline"
+												size="sm"
+												className="text-sm px-4 py-2"
+											>
+												<ExtendedLink href="tel:112">
+													<Phone className="h-4 w-4 mr-2" />
+													{t("nav.emergency.call")}
+												</ExtendedLink>
+											</Button>
+										</li>
+										<li>
+											<Button
+												asChild
+												size="sm"
+												className="text-sm px-4 py-2"
+											>
+												<ExtendedLink href="/contact">{t("btn.contact")}</ExtendedLink>
+											</Button>
+										</li>
 									</ul>
 								</nav>
 							</div>
@@ -318,6 +346,43 @@ const Navbar = () => {
 													</ExtendedLink>
 												</Button>
 											</li>
+
+											{/* Police Services Section */}
+											<li>
+												<div className="space-y-1">
+													<div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 py-1">Police Services</div>
+													<div className="space-y-1">
+														<PoliceStationDropdown className="w-full" />
+														<Button
+															asChild
+															variant="ghost"
+															className="text-foreground hover:text-foreground/80 transition-colors duration-150 font-medium flex items-center w-full p-2 rounded-md hover:bg-muted/50"
+														>
+															<ExtendedLink
+																href="/stations"
+																onClick={() => setMenuState(false)}
+															>
+																<Building className="h-4 w-4 mr-2" />
+																All Police Stations
+															</ExtendedLink>
+														</Button>
+														<Button
+															asChild
+															variant="ghost"
+															className="text-foreground hover:text-foreground/80 transition-colors duration-150 font-medium flex items-center w-full p-2 rounded-md hover:bg-muted/50"
+														>
+															<ExtendedLink
+																href="tel:112"
+																onClick={() => setMenuState(false)}
+															>
+																<Phone className="h-4 w-4 mr-2" />
+																Emergency - 112
+															</ExtendedLink>
+														</Button>
+													</div>
+												</div>
+											</li>
+
 											{menuItems.map((item, index) => (
 												<li key={index}>
 													<div className="space-y-1">
@@ -451,37 +516,6 @@ const Navbar = () => {
 											{t("accessibility.sitemap")}
 										</ExtendedLink>
 									</div>
-								</div>
-
-								<div className="flex w-full flex-col space-y-2 sm:flex-row sm:gap-2 sm:space-y-0 md:w-fit">
-									<Button
-										asChild
-										variant="outline"
-										size="sm"
-										className={cn(isScrolled && "lg:hidden")}
-									>
-										<ExtendedLink href="tel:112">
-											<span>{t("nav.emergency.call")}</span>
-										</ExtendedLink>
-									</Button>
-									<Button
-										asChild
-										size="sm"
-										className={cn(isScrolled && "lg:hidden")}
-									>
-										<ExtendedLink href="/contact">
-											<span>{t("btn.contact")}</span>
-										</ExtendedLink>
-									</Button>
-									<Button
-										asChild
-										size="sm"
-										className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-									>
-										<ExtendedLink href="tel:112">
-											<span>{t("btn.emergency")}</span>
-										</ExtendedLink>
-									</Button>
 								</div>
 							</div>
 						</div>
