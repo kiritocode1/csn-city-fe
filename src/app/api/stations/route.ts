@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 // Simple proxy to backend to avoid CORS and centralize URL
 export async function GET() {
-	const backendUrl = "https://csn-city-backend-production.up.railway.app";
+	const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "https://csn-city-backend-production.up.railway.app";
 
 	try {
 		// Add timeout and a simple retry to be resilient to transient upstream failures
